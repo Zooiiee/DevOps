@@ -1,0 +1,14 @@
+Jenkins Installation – Setup Jenkins Login Zooiiee 
+
+Install Docker - check if it is installed using Docker info
+Go to Power Shell
+
+docker pull jenkins/jenkins:lts-jdk17
+
+docker volume create jenkins_data
+
+docker run -d -p 8080:8080 -p 50000:50000 -v jenkins_data:/var/jenkins_home --name jenkins-container jenkins/jenkins:lts-jdk17
+
+Open your browser: http://localhost:8080
+
+Jenkins will ask for the admin password — get it using: docker exec jenkins-container cat /var/jenkins_home/secrets/initialAdminPassword
