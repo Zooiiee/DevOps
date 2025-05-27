@@ -1,0 +1,104 @@
+DOCKER
+
+Goal
+Create a simple Python Flask web app, containerize it with Docker, and run it in a Docker container.
+
+Step 1: Create a project folder
+bash
+CopyEdit
+mkdir flask-docker-app
+cd flask-docker-app
+
+
+Step 2: Create the Flask application
+Create a file named app.py:
+python
+CopyEdit
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return "Hello, Dockerized Flask!"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
+
+Step 3: Create a requirements file
+Create requirements.txt with:
+ini
+CopyEdit
+Flask==2.2.5
+
+
+Step 4: Create a Dockerfile
+Create a file called Dockerfile (no extension):
+Dockerfile
+CopyEdit
+# Use official Python image as base
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy app source
+COPY app.py .
+
+# Expose Flask's port
+EXPOSE 5000
+
+# Run the app
+CMD ["python", "app.py"]
+
+
+
+
+
+
+
+Step 5: Build the Docker image
+rename-item Dockerfile.txt Dockerfile
+From the terminal (inside flask-docker-app folder):
+bash
+CopyEdit
+docker build -t flask-docker-app .
+
+This builds the image and tags it as flask-docker-app.
+
+Step 6: Run the container
+bash
+CopyEdit
+docker run -d -p 5000:5000 --name myflaskapp flask-docker-app
+
+-d: runs container in background (detached)
+
+
+-p 5000:5000: maps host port 5000 to container port 5000
+
+
+--name myflaskapp: names the container
+
+
+
+Step 7: Test the app
+Open your browser or use curl:
+arduino
+CopyEdit
+http://localhost:5000/
+
+You should see:
+CopyEdit
+Hello, Dockerized Flask!
+
+
+Step 8: Stop and remove the container (optional)
+bash
+CopyEdit
+docker stop myflaskapp
+docker rm myflaskapp
