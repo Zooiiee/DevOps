@@ -1,0 +1,30 @@
+Ad-Hoc Ansible Commands
+1. 🔁 Ping All Hosts
+Test connectivity:
+ansible all -i hosts -m ping
+ansible localhost -i hosts, -m ping
+
+2. 🖥️ Run a Shell Command
+Run uptime on all servers:
+
+ansible all -i hosts -m shell -a "uptime"
+
+3. 📦 Install a Package (e.g. Apache)
+
+ansible all -i hosts -m apt -a "name=apache2 state=present" --become
+
+(For RedHat/CentOS, use yum module instead of apt)
+4. 📁 Copy a File to Remote Servers
+
+ansible all -i hosts -m copy -a "src=./index.html dest=/var/www/html/index.html" --become
+
+5. 🗃️ Create a Directory
+ansible all -i hosts -m file -a "path=/opt/demo_dir state=directory mode=0755" --become
+
+6. 🔄 Restart a Service
+
+ansible all -i hosts -m service -a "name=apache2 state=restarted" --become
+
+7. 👤 Create a User
+
+ansible all -i hosts -m user -a "name=testuser state=present" --become
