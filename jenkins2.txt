@@ -1,0 +1,130 @@
+8. Demonstrate Continuous Integration and development using Jenkins
+
+2. Create Your GitHub Repo
+Example structure:
+pgsql
+CopyEdit
+simple-web-app/
+├── index.html
+├── Jenkinsfile
+
+Sample index.html:
+html
+CopyEdit
+<!DOCTYPE html>
+<html>
+  <head><title>CI/CD Test</title></head>
+  <body><h1>Hello from Jenkins CI/CD!</h1></body>
+</html>
+
+Sample Jenkinsfile:
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                git url: 'https://github.com/Zooiiee/simple-web-app.git', branch: 'main', credentialsId: 'github-creds'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Static site - no build step needed.'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying to Jenkins workspace folder...'
+                sh 'mkdir -p deploy'
+                sh 'cp index.html deploy/index.html'
+            }
+        }
+    }
+}
+
+
+🔁 Replace path (C:\inetpub\wwwroot) with your server root (XAMPP or Python folder if needed).
+
+⚙️ 3. Configure Jenkins
+a. Install Required Plugins
+Go to: Manage Jenkins → Plugins
+ Install:
+Git Plugin
+
+
+GitHub Integration Plugin
+
+
+Pipeline Plugin
+
+
+
+b. Add GitHub Credentials
+Generate a GitHub Personal Access Token
+
+
+Go to Manage Jenkins → Credentials → Global
+
+Add:
+
+Kind: Username & Password
+
+Username: your GitHub username
+
+Password: the token
+
+ID: github-creds (must match the Jenkinsfile)
+
+
+
+🧪 4. Create a Pipeline Job
+New Item → Pipeline
+Name: web-deploy-pipeline
+Choose: Pipeline
+Scroll to Pipeline section
+Definition: Pipeline script from SCM
+SCM: Git
+Repo URL: https://github.com/YOUR_USERNAME/simple-web-app.git
+Credentials: Select your GitHub creds  set
+Click “Settings”
+
+Scroll down on the left sidebar and click:
+“Developer settings” → “Personal access tokens” →
+Choose “Tokens (classic)”
+Script Path: Jenkinsfile
+
+Click Save.
+
+🚀 5. Run the Pipeline
+Click Build Now
+Jenkins will:
+Clone your GitHub repo
+Copy the index.html to your local server folder
+Show "Hello from Jenkins CI/CD!" at http://localhost
+
+
+
+
+
+
+✅ Here's how to correctly copy the file from your host:
+Exit the Jenkins container (just type exit):
+bash
+CopyEdit
+exit
+
+Then from PowerShell on your host (Windows), run:
+powershell
+CopyEdit
+docker cp jenkins-container:/var/jenkins_home/workspace/web-deploy-pipeline/deploy/index.html .
+
+This will copy the index.html file from inside the Jenkins container to your current folder on your host.
+
+🧪 Then, serve the file with Python (if you have Python installed):
+powershell
+CopyEdit
+python -m http.server 8081
+
+Then visit http://localhost:8081 in your browser to see your deployed page.
