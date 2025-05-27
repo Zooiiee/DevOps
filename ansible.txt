@@ -1,0 +1,67 @@
+Sudo apt update
+sudo apt install software-properties-common -y
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible -y
+ansible --version
+
+
+Make a project folder (optional but recommended):
+
+mkdir my-ansible-project
+cd my-ansible-project
+Create the inventory file (hosts)
+
+You can create with nano or any editor:
+
+bash
+
+nano hosts
+Put something like this inside:
+
+[webservers]
+192.168.1.10
+192.168.1.11
+
+[dbservers]
+192.168.1.20
+Save and exit (Ctrl+O, Enter, Ctrl+X in nano).
+
+Create the playbook file
+
+bash
+Copy
+Edit
+nano setup-web.yml
+Paste your playbook YAML here:
+
+yaml
+Copy
+Edit
+---
+- name: Setup Web Servers
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Ensure nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+Save and exit.
+
+Running Playbooks in This Structure
+From inside my-ansible-project/:
+
+bash
+Copy
+Edit
+ansible-playbook -i hosts setup-web.yml
